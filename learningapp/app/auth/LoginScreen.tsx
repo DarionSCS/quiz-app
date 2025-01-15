@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
-import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "expo-router";
+import { login } from "@/lib/auth/api";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -9,13 +9,12 @@ export default function LoginScreen() {
   const [error, setError] = useState("");
   const router = useRouter();
 
+  console.log("login");
+
   const handleLogin = async () => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) {
-      setError(error.message);
+    const errorMessage = await login(email, password);
+    if (errorMessage) {
+      setError(errorMessage);
     } else {
       router.replace("/");
     }
