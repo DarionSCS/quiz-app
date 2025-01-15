@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { API } from "@/src/lib/networking/supabaseClient";
+import { API } from "@core/networking/supabaseClient";
 import { useRouter } from "expo-router";
-import Button from "@/src/components/design/Button";
+import Button from "@design/Button/Button";
 
 export default function IndexScreen() {
   const router = useRouter();
@@ -11,7 +11,7 @@ export default function IndexScreen() {
 
   const handleLogout = async () => {
     await API.auth.signOut();
-    router.replace("/auth/LoginScreen");
+    router.replace("/LoginScreen");
   };
 
   const handleSettings = async () => {
@@ -21,8 +21,8 @@ export default function IndexScreen() {
   return (
     <View style={styles.container}>
       <Text>Welcome to the Home Screen!</Text>
-      <Button title="Settings" onPress={handleSettings} />
-      <Button title="Logout" onPress={handleLogout} />
+      <Button onPress={handleSettings}> Settings </Button>
+      <Button onPress={handleLogout}> Logout </Button>
     </View>
   );
 }

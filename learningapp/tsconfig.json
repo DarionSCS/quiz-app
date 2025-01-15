@@ -3,9 +3,11 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@assets/*": ["./assets/*"],
+      "@design/*": ["./src/components/design/*"],
+      "@functional/*": ["./src/components/functional/*"],
+      "@core/*": ["./src/core/*"],
+      "@style/*": ["./src/style/*"]
     }
   },
   "include": [

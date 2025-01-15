@@ -3,8 +3,8 @@ import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import { DefaultScreenOptions, Theme, Variables } from "@/src/style/theme";
-import AuthProvider from "@/src/components/functional/Auth/AuthProvider";
+import { DefaultScreenOptions, Theme, Variables } from "@style/theme";
+import AuthProvider from "@functional/Auth/AuthProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
