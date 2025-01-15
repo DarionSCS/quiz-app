@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { API } from "@/lib/networking/supabaseClient";
+import { API } from "@/src/lib/networking/supabaseClient";
 import { useRouter } from "expo-router";
-import Button from "@/components/design/Button";
+import Button from "@/src/components/design/Button";
 
 export default function IndexScreen() {
   const router = useRouter();
@@ -21,8 +21,8 @@ export default function IndexScreen() {
   return (
     <View style={styles.container}>
       <Text>Welcome to the Home Screen!</Text>
-      <Button title="Settings" onPress={handleLogout} />
-      <Button title="Logout" onPress={handleSettings} />
+      <Button title="Settings" onPress={handleSettings} />
+      <Button title="Logout" onPress={handleLogout} />
     </View>
   );
 }

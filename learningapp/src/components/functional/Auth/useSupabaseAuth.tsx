@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { AuthChangeEvent } from "@supabase/supabase-js";
-import { Auth } from "@/lib/auth/types";
-import { API } from "@/lib/networking/supabaseClient";
-import { getCurrentSession } from "@/lib/auth/api";
+import { Auth } from "@/src/lib/auth/types";
+import { API } from "@/src/lib/networking/supabaseClient";
+import { getCurrentSession } from "@/src/lib/auth/api";
 
 const useSupabaseAuth = () => {
   const [isInitialized, setIsInitialized] = useState<boolean>(false);

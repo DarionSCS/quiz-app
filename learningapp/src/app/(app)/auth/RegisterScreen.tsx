@@ -8,7 +8,7 @@ import {
   Switch,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { register } from "@/lib/auth/api";
+import { register } from "@/src/lib/auth/api";
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState("");

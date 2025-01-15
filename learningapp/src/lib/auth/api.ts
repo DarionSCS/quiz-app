@@ -1,6 +1,6 @@
-import { API } from "@/lib/networking/supabaseClient";
+import { API } from "@/src/lib/networking/supabaseClient";
 import { Session } from "@supabase/supabase-js";
-import { Profile } from "@/lib/profiles/types";
+import { Profile } from "@/src/lib/profiles/types";
 import { getProfile } from "../profiles/api";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";

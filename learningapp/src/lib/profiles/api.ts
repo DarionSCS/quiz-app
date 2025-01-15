@@ -1,4 +1,4 @@
-import { API } from "@/lib/networking/supabaseClient";
+import { API } from "@/src/lib/networking/supabaseClient";
 import { Profile } from "./types";
 
 export const getProfile = async (id: string): Promise<Profile | null> => {

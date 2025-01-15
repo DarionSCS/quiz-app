@@ -1,4 +1,4 @@
-import { Auth, User } from "@/lib/auth/types";
+import { Auth, User } from "@/src/lib/auth/types";
 import { createContext, useContext } from "react";
 import useSupabaseAuth from "./useSupabaseAuth";
 
