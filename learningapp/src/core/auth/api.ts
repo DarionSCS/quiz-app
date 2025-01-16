@@ -53,11 +53,11 @@ export const login = async ({ email, password }: LoginBody) => {
   return Promise.resolve(data.user);
 };
 
-type RegisterResponse = {
+// register
+export type RegisterResponse = {
   error: string | null;
 };
 
-// register
 export const register = async (
   email: string,
   password: string,
@@ -85,5 +85,5 @@ export const register = async (
 
 // logout
 export const logout = async () => {
-  return API.auth.signOut();
+  await API.auth.signOut();
 };

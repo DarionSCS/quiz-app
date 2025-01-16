@@ -1,4 +1,4 @@
-import { Redirect, Stack } from "expo-router";
+import { Redirect, Stack, Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useAuthContext } from "@functional/Auth/AuthProvider";
 import { DefaultScreenOptions } from "@style/theme";
@@ -16,10 +16,22 @@ const AppLayout = () => {
 
   return (
     <>
-      <Stack screenOptions={DefaultScreenOptions}>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
-      <StatusBar style="light" />
+      <Tabs
+        screenOptions={{
+          headerStyle: { backgroundColor: "#FFF" },
+          headerTintColor: "#FFF",
+          headerTitleStyle: { fontSize: 18, fontWeight: "bold" },
+        }}
+      >
+        <Tabs.Screen
+          name="(tabs)"
+          options={{ title: "Home", headerShown: false }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{ title: "Settings", headerShown: false }}
+        />
+      </Tabs>
     </>
   );
 };

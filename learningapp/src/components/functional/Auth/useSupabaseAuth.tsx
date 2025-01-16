@@ -11,6 +11,7 @@ const useSupabaseAuth = () => {
   const fetchAuth = useCallback(async () => {
     try {
       const auth = await getCurrentSession();
+
       setAuth(auth);
       return auth;
     } catch (error) {

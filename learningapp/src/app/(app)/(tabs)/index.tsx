@@ -9,20 +9,9 @@ export default function IndexScreen() {
 
   console.log("index");
 
-  const handleLogout = async () => {
-    await API.auth.signOut();
-    router.replace("/LoginScreen");
-  };
-
-  const handleSettings = async () => {
-    router.replace("/profile/Settings");
-  };
-
   return (
     <View style={styles.container}>
       <Text>Welcome to the Home Screen!</Text>
-      <Button onPress={handleSettings}> Settings </Button>
-      <Button onPress={handleLogout}> Logout </Button>
     </View>
   );
 }
