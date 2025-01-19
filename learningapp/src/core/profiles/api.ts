@@ -5,13 +5,10 @@ export const getProfile = async (user_id: string): Promise<Profile | null> => {
   const { data, error } = await API.from("profiles")
     .select()
     .eq("user_id", user_id)
-    .single();
+    .single()
+    .throwOnError();
   // console.log("data: ", data);
-  if (error) {
-    console.error("Error in getProfile:", error);
-    return null;
-  }
-  return data;
+  return Promise.resolve(data);
 };
 
 export const updateProfile = async (
@@ -20,15 +17,12 @@ export const updateProfile = async (
 ): Promise<Profile | null> => {
   console.log("Updating profile with user_id:", user_id);
 
-  const { data, error } = await API.from("profiles")
+  const { data } = await API.from("profiles")
     .update(profileData)
     .eq("user_id", user_id)
     .select("*")
-    .single();
+    .single()
+    .throwOnError();
 
-  if (error) {
-    console.error("Error in updateProfile:", error);
-    return null;
-  }
-  return data;
+  return Promise.resolve(data);
 };

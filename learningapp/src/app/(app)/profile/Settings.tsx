@@ -63,9 +63,7 @@ export default function Settings() {
     fetchUserProfile();
   }, []);
 
-  const handleChangePassword = async () => {
-    router.replace("/profile/passwordChange");
-  };
+
   const handleUpdateProfile = async () => {
     setIsSaving(true);
     try {
@@ -177,9 +175,6 @@ export default function Settings() {
 
           <Button onPress={handleUpdateProfile}>
             {isSaving ? "Saving..." : "Save Profile"}
-          </Button>
-          <Button style={styles.topMargin} onPress={handleChangePassword}>
-            Change Password
           </Button>
           <View style={styles.topMargin}>
             <Button onPress={logout}> Logout </Button>

@@ -155,27 +155,36 @@ export type Database = {
       }
       questions: {
         Row: {
-          answer_id: string | null
+          answer: string | null
           created_at: string
+          difficulty: Database["public"]["Enums"]["difficulty"] | null
           id: string
           img: string | null
+          options: Json | null
           question: string | null
+          question_type: Database["public"]["Enums"]["question_type"] | null
           subject_id: string | null
         }
         Insert: {
-          answer_id?: string | null
+          answer?: string | null
           created_at?: string
+          difficulty?: Database["public"]["Enums"]["difficulty"] | null
           id?: string
           img?: string | null
+          options?: Json | null
           question?: string | null
+          question_type?: Database["public"]["Enums"]["question_type"] | null
           subject_id?: string | null
         }
         Update: {
-          answer_id?: string | null
+          answer?: string | null
           created_at?: string
+          difficulty?: Database["public"]["Enums"]["difficulty"] | null
           id?: string
           img?: string | null
+          options?: Json | null
           question?: string | null
+          question_type?: Database["public"]["Enums"]["question_type"] | null
           subject_id?: string | null
         }
         Relationships: []
@@ -183,6 +192,7 @@ export type Database = {
       results: {
         Row: {
           created_time: string | null
+          difficulty: Database["public"]["Enums"]["difficulty"] | null
           id: string
           profile_id: string | null
           progress: number | null
@@ -191,6 +201,7 @@ export type Database = {
         }
         Insert: {
           created_time?: string | null
+          difficulty?: Database["public"]["Enums"]["difficulty"] | null
           id?: string
           profile_id?: string | null
           progress?: number | null
@@ -199,6 +210,7 @@ export type Database = {
         }
         Update: {
           created_time?: string | null
+          difficulty?: Database["public"]["Enums"]["difficulty"] | null
           id?: string
           profile_id?: string | null
           progress?: number | null
@@ -248,7 +260,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      difficulty: "Beginner" | "Intermediate" | "Advanced"
+      question_type: "multiple-choice" | "open-ended"
     }
     CompositeTypes: {
       [_ in never]: never

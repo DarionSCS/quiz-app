@@ -10,13 +10,15 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "supabase": "supabase gen types typescript --project-id yilflnwsdzhadxrnqiqo > lib/networking/database.types.ts"
+    "supabase": "supabase gen types typescript --project-id yilflnwsdzhadxrnqiqo > src/core/networking/database.types.ts",
+    "seed:questions": "ts-node seedQuestions.ts"
   },
   "jest": {
     "preset": "jest-expo"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
+    "@faker-js/faker": "^9.4.0",
     "@hookform/resolvers": "^3.10.0",
     "@react-native-async-storage/async-storage": "^2.1.0",
     "@react-native-community/datetimepicker": "8.2.0",
