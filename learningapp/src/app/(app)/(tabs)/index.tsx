@@ -1,20 +1,49 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import SubjectCard from "@design/Cards/SubjectCard";
 import { getAllSubjects } from "@core/subjects/api";
+import { getUserAverageResultsForSubject } from "@core/subjects/utils";
+import { getCurrentSession } from "@core/auth/api";
 
 export default function IndexScreen() {
   const [subjects, setSubjects] = useState<
-    { created_at: string; id: string; name: string | null }[] | null
+    { id: string; name: string | null; overallScore: number | null }[] | null
   >([]);
 
-  useEffect(() => {
-    const fetchSubjects = async () => {
-      const data = await getAllSubjects();
-      setSubjects(data);
-    };
+  const fetchSubjectsWithScores = async () => {
+    try {
+      const subjectsData = await getAllSubjects();
+      if (!subjectsData) return;
 
-    fetchSubjects();
+      const session = await getCurrentSession();
+      if (!session) return;
+
+      const userProfileId = session.user.id;
+
+      const enrichedSubjects = await Promise.all(
+        subjectsData.map(async (subject) => {
+          const result = await getUserAverageResultsForSubject(
+            subject.id,
+            userProfileId
+          );
+
+          return {
+            id: subject.id,
+            name: subject.name,
+            overallScore: result?.overall_average ?? null, // Add the overall score
+          };
+        })
+      );
+
+      // Filter out undefined results
+      setSubjects(enrichedSubjects.filter((s) => s !== undefined));
+    } catch (error) {
+      console.error("Failed to fetch subjects or scores:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubjectsWithScores();
   }, []);
 
   return (
@@ -24,7 +53,9 @@ export default function IndexScreen() {
         <FlatList
           data={subjects}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <SubjectCard subject={item} />}
+          renderItem={({ item }) => (
+            <SubjectCard subject={item} overallScore={item.overallScore} />
+          )}
           contentContainerStyle={styles.list}
         />
       ) : (

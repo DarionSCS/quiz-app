@@ -40,7 +40,7 @@ const Login = () => {
   const { mutate, error, isPending } = useMutation({
     mutationFn: ({ email, password }: FieldValues) => login(email, password),
     onSuccess: () => {
-      console.log("Login successful, navigating to settings"); // Add this log
+      console.log("Login successful, navigating to settings");
       router.push("/(app)/(tabs)");
     },
   });

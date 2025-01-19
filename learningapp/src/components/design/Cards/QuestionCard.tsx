@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -12,20 +12,43 @@ import { Question } from "@core/questions/types";
 type QuestionCardProps = {
   question: Question;
   onSubmit: (answer: string) => void;
+  timerDuration: number; // Timer duration in seconds
 };
 
 export default function QuestionCard({
   question,
   onSubmit,
+  timerDuration,
 }: QuestionCardProps) {
-  const [answer, setAnswer] = useState<string>("");
+  const [answer, setAnswer] = useState<string>(""); // User's selected answer
+  const [feedback, setFeedback] = useState<"correct" | "incorrect" | null>(
+    null
+  ); // Feedback state
+  const [timeLeft, setTimeLeft] = useState<number>(timerDuration);
 
-  const handleSubmit = () => {
-    onSubmit(answer);
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      handleSubmit(""); // Submit an empty answer when timer runs out
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  const handleSubmit = (selectedAnswer: string) => {
+    const isCorrect = question.answer === selectedAnswer;
+    setFeedback(isCorrect ? "correct" : "incorrect");
+    setAnswer(selectedAnswer);
+    onSubmit(selectedAnswer);
     setAnswer("");
+    setTimeLeft(timerDuration);
   };
 
-  // Safely handle options
+  // handle options
   const options: string[] = Array.isArray(question.options)
     ? (question.options as string[])
     : typeof question.options === "string"
@@ -35,13 +58,14 @@ export default function QuestionCard({
   return (
     <View style={styles.card}>
       <Text style={styles.questionText}>{question.question}</Text>
+      <Text style={styles.timerText}>Time Left: {timeLeft}s</Text>
       {question.question_type === "multiple-choice" && options.length > 0 ? (
         <View>
           {options.map((option, index) => (
             <TouchableOpacity
               key={index}
               style={styles.optionButton}
-              onPress={() => onSubmit(String.fromCharCode(65 + index))} // Send "A", "B", "C", "D"
+              onPress={() => handleSubmit(String.fromCharCode(65 + index))} // A, B, C, D
             >
               <Text style={styles.optionText}>
                 {String.fromCharCode(65 + index)}. {option}
@@ -58,7 +82,19 @@ export default function QuestionCard({
         />
       )}
       {question.question_type === "open-ended" && (
-        <Button title="Submit" onPress={handleSubmit} />
+        <Button title="Submit" onPress={() => handleSubmit(answer)} />
+      )}
+      {feedback && (
+        <Text
+          style={[
+            styles.feedback,
+            feedback === "correct"
+              ? styles.correctFeedback
+              : styles.incorrectFeedback,
+          ]}
+        >
+          {feedback === "correct" ? "Correct!" : "Incorrect, try again!"}
+        </Text>
       )}
     </View>
   );
@@ -77,6 +113,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 12,
   },
+  timerText: {
+    fontSize: 14,
+    color: "red",
+    marginBottom: 8,
+  },
   optionButton: {
     backgroundColor: "#007BFF",
     padding: 10,
@@ -94,5 +135,17 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 8,
     marginBottom: 12,
+  },
+  feedback: {
+    marginTop: 12,
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  correctFeedback: {
+    color: "green",
+  },
+  incorrectFeedback: {
+    color: "red",
   },
 });

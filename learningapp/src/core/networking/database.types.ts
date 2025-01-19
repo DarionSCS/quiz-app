@@ -117,6 +117,7 @@ export type Database = {
           answer_text: string | null
           created_at: string
           id: string
+          multiplier: boolean | null
           profile_id: string | null
           question_id: string | null
         }
@@ -125,6 +126,7 @@ export type Database = {
           answer_text?: string | null
           created_at?: string
           id?: string
+          multiplier?: boolean | null
           profile_id?: string | null
           question_id?: string | null
         }
@@ -133,6 +135,7 @@ export type Database = {
           answer_text?: string | null
           created_at?: string
           id?: string
+          multiplier?: boolean | null
           profile_id?: string | null
           question_id?: string | null
         }

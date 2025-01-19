@@ -21,8 +21,9 @@ export const getQuestionResult = async (
   return data;
 };
 
+type QuestionResultInsert = Omit<Question_Results, "id" | "created_at">;
 export const setQuestionResult = async (
-  body: Question_Results
+  body: QuestionResultInsert
 ): Promise<Question_Results | null> => {
   const { data } = await API.from("question_results")
     .insert([body])

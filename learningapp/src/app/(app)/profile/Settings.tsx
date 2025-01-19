@@ -28,6 +28,7 @@ export default function Settings() {
   const [loading, setLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+
   const router = useRouter();
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -62,7 +63,6 @@ export default function Settings() {
 
     fetchUserProfile();
   }, []);
-
 
   const handleUpdateProfile = async () => {
     setIsSaving(true);
