@@ -17,8 +17,6 @@ export const updateProfile = async (
   user_id: string,
   profileData: Partial<Profile>
 ): Promise<Profile | null> => {
-  console.log("Updating profile with user_id:", user_id);
-
   const { data } = await API.from("profiles")
     .update(profileData)
     .eq("user_id", user_id)
