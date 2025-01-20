@@ -4,12 +4,17 @@ import SubjectCard from "@design/Cards/SubjectCard";
 import { getAllSubjects } from "@core/subjects/api";
 import { getUserAverageResultsForSubject } from "@core/subjects/utils";
 import { getCurrentSession } from "@core/auth/api";
+import Button from "@design/Button/Button";
+import { useRouter } from "expo-router";
 
 export default function IndexScreen() {
   const [subjects, setSubjects] = useState<
     { id: string; name: string | null; overallScore: number | null }[] | null
   >([]);
-
+  const router = useRouter();
+  const handleBadgeRedirect = () => {
+    router.push("/badges");
+  };
   const fetchSubjectsWithScores = async () => {
     try {
       const subjectsData = await getAllSubjects();
@@ -61,6 +66,7 @@ export default function IndexScreen() {
       ) : (
         <Text style={styles.noSubjectsText}>No subjects found.</Text>
       )}
+      <Button onPress={handleBadgeRedirect}>badges</Button>
     </View>
   );
 }

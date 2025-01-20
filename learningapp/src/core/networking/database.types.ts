@@ -16,6 +16,7 @@ export type Database = {
           id: string
           img: string | null
           name: string | null
+          question_amount: number | null
         }
         Insert: {
           created_at?: string
@@ -23,6 +24,7 @@ export type Database = {
           id?: string
           img?: string | null
           name?: string | null
+          question_amount?: number | null
         }
         Update: {
           created_at?: string
@@ -30,6 +32,7 @@ export type Database = {
           id?: string
           img?: string | null
           name?: string | null
+          question_amount?: number | null
         }
         Relationships: []
       }

@@ -56,7 +56,8 @@
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
     "react-query": "^3.39.3",
-    "yup": "^1.6.1"
+    "yup": "^1.6.1",
+    "expo-speech": "~13.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

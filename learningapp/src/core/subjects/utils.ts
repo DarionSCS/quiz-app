@@ -24,7 +24,6 @@ export const getUserAverageResultsForSubject = async (
     .throwOnError();
 
   if (!data || data.length === 0) {
-    console.log("No results found for the given subject and profile.");
     return { difficulty_averages: [], overall_average: null };
   }
 

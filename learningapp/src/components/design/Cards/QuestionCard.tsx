@@ -6,13 +6,15 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { Question } from "@core/questions/types";
+import * as Speech from "expo-speech";
 
 type QuestionCardProps = {
   question: Question;
   onSubmit: (answer: string) => void;
-  timerDuration: number; // Timer duration in seconds
+  timerDuration: number;
 };
 
 export default function QuestionCard({
@@ -20,7 +22,7 @@ export default function QuestionCard({
   onSubmit,
   timerDuration,
 }: QuestionCardProps) {
-  const [answer, setAnswer] = useState<string>(""); // User's selected answer
+  const [answer, setAnswer] = useState<string>("");
   const [feedback, setFeedback] = useState<"correct" | "incorrect" | null>(
     null
   ); // Feedback state
@@ -48,7 +50,28 @@ export default function QuestionCard({
     setTimeLeft(timerDuration);
   };
 
-  // handle options
+  const handleSpeak = () => {
+    if (question.question) {
+      Speech.speak(question.question, {
+        language: "en",
+        pitch: 1,
+        rate: 1,
+        onDone: () => console.log("Speech completed"),
+        onError: (error) => {
+          console.error("Speech error:", error);
+          Alert.alert(
+            "Error",
+            "Unable to play the question aloud. Please check your sound settings."
+          );
+        },
+      });
+    } else {
+      console.warn("No question to speak.");
+      Alert.alert("Notice", "No question text available to read aloud.");
+    }
+  };
+
+  // Safely handle options
   const options: string[] = Array.isArray(question.options)
     ? (question.options as string[])
     : typeof question.options === "string"
@@ -57,7 +80,12 @@ export default function QuestionCard({
 
   return (
     <View style={styles.card}>
-      <Text style={styles.questionText}>{question.question}</Text>
+      <Text style={styles.questionText}>
+        {question.question || "No Question Available"}
+      </Text>
+      <TouchableOpacity style={styles.speakButton} onPress={handleSpeak}>
+        <Text style={styles.speakButtonText}>🔊 Read Aloud</Text>
+      </TouchableOpacity>
       <Text style={styles.timerText}>Time Left: {timeLeft}s</Text>
       {question.question_type === "multiple-choice" && options.length > 0 ? (
         <View>
@@ -117,6 +145,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "red",
     marginBottom: 8,
+  },
+  speakButton: {
+    backgroundColor: "#007BFF",
+    padding: 8,
+    borderRadius: 8,
+    marginVertical: 8,
+    alignItems: "center",
+  },
+  speakButtonText: {
+    color: "#fff",
+    fontSize: 16,
   },
   optionButton: {
     backgroundColor: "#007BFF",

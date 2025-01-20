@@ -31,3 +31,25 @@ export const getHighScoreForQuiz = async (
     return 0;
   }
 };
+
+export const getAllCorrectAnswers = async (
+  profileId: string
+): Promise<number> => {
+  try {
+    const { data, error } = await API.from("question_results")
+      .select("answer")
+      .eq("profile_id", profileId)
+      .eq("answer", true);
+
+    if (error) {
+      console.error("Error fetching correct answers:", error);
+      return 0;
+    }
+
+    // the count of correct answers
+    return data?.length || 0;
+  } catch (error) {
+    console.error("Error calculating correct answers:", error);
+    return 0;
+  }
+};
