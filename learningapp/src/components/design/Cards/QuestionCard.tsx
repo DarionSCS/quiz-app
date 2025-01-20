@@ -14,7 +14,7 @@ import * as Speech from "expo-speech";
 
 type QuestionCardProps = {
   question: Question;
-  onSubmit: (answer: string) => void;
+  onSubmit: (answer: string, timeMultiplier: boolean) => void;
   timerDuration: number;
 };
 
@@ -28,6 +28,7 @@ export default function QuestionCard({
     null
   );
   const [timeLeft, setTimeLeft] = useState<number>(timerDuration);
+  const [timeMultiplier, setTimeMultiplier] = useState<boolean>(false);
 
   useEffect(() => {
     if (timeLeft <= 0) {
@@ -44,9 +45,11 @@ export default function QuestionCard({
 
   const handleSubmit = (selectedAnswer: string) => {
     const isCorrect = question.answer === selectedAnswer;
+    const isWithinMultiplierTime = timeLeft >= timerDuration - 10;
     setFeedback(isCorrect ? "correct" : "incorrect");
+    setTimeMultiplier(isWithinMultiplierTime);
     setAnswer(selectedAnswer);
-    onSubmit(selectedAnswer);
+    onSubmit(selectedAnswer, isWithinMultiplierTime);
     setAnswer("");
     setTimeLeft(timerDuration);
   };
@@ -130,6 +133,13 @@ export default function QuestionCard({
           {feedback === "correct" ? "Correct!" : "Incorrect, try again!"}
         </Text>
       )}
+      {feedback && (
+        <Text style={styles.multiplierFeedback}>
+          {timeMultiplier
+            ? "Time Multiplier Applied! 🕒"
+            : "No Time Multiplier Applied"}
+        </Text>
+      )}
     </View>
   );
 }
@@ -197,5 +207,11 @@ const styles = StyleSheet.create({
   },
   incorrectFeedback: {
     color: "red",
+  },
+  multiplierFeedback: {
+    fontSize: 14,
+    color: "#007BFF",
+    marginTop: 8,
+    textAlign: "center",
   },
 });

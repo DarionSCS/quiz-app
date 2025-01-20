@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter, useFocusEffect } from "expo-router";
 import { getSubject } from "@core/subjects/api";
 import { getPendingQuestionsBySubjectAndDifficulty } from "@core/questions/api";
 import { setQuestionResult } from "@core/question_results/api";
@@ -34,6 +34,16 @@ export default function SubjectScreen() {
     { difficulty: string; score: number | null }[]
   >([]);
   const [startTime, setStartTime] = useState<number | null>(null);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setQuestions([]);
+      setDifficulty(null);
+      setCurrentIndex(0);
+      const timeoutId = setTimeout(() => {}, 0);
+      clearTimeout(timeoutId);
+    }, [])
+  );
 
   useEffect(() => {
     if (id) {
