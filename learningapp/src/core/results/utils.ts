@@ -6,9 +6,7 @@ export const calculateQuizScore = async (
   difficulty: "Beginner" | "Intermediate" | "Advanced"
 ): Promise<{ score: number; progress: number }> => {
   const { data: questionResults, error } = await API.from("question_results")
-    .select(
-      "answer, multiplier, question:questions(subject_id, difficulty)"
-    )
+    .select("answer, multiplier, question:questions(subject_id, difficulty)")
     .eq("profile_id", profileId)
     .eq("question.subject_id", subjectId)
     .eq("question.difficulty", difficulty);
@@ -38,4 +36,25 @@ export const calculateQuizScore = async (
   const progress = (totalQuestions / totalQuestions) * 100;
 
   return { score: Math.round(score), progress: Math.round(progress) };
+};
+
+export const getLeaderboard = async (): Promise<
+  { profile_id: string; score: number; profile_name: string | null }[]
+> => {
+  const { data, error } = await API.from("results")
+    .select("profile_id, score, profile:profiles(nickname)")
+    .order("score", { ascending: false }) // descending to get max
+    .limit(10);
+
+  if (error) {
+    console.error("Error fetching leaderboard:", error);
+    throw error;
+  }
+
+  // Transform the response to match the expected structure
+  return (data || []).map((entry) => ({
+    profile_id: entry.profile_id ?? "",
+    score: entry.score ?? 0,
+    profile_name: entry.profile?.nickname ?? "Anonymous",
+  }));
 };

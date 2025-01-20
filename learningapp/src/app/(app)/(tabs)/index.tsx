@@ -15,6 +15,9 @@ export default function IndexScreen() {
   const handleBadgeRedirect = () => {
     router.push("/badges");
   };
+  const handleLBRedirect = () => {
+    router.push("/leaderboard");
+  };
   const fetchSubjectsWithScores = async () => {
     try {
       const subjectsData = await getAllSubjects();
@@ -66,7 +69,10 @@ export default function IndexScreen() {
       ) : (
         <Text style={styles.noSubjectsText}>No subjects found.</Text>
       )}
-      <Button onPress={handleBadgeRedirect}>badges</Button>
+      <Button style={styles.list} onPress={handleBadgeRedirect}>
+        Badges
+      </Button>
+      <Button onPress={handleLBRedirect}>Leaderboard</Button>
     </View>
   );
 }

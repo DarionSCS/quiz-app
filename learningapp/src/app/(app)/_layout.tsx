@@ -38,8 +38,12 @@ const AppLayout = () => {
         options={{ title: "Home", headerShown: true }}
       />
       <Tabs.Screen
-        name="profile"
+        name="profile/settings"
         options={{ title: "Settings", headerShown: true }}
+      />
+      <Tabs.Screen
+        name="subject/[id]"
+        options={{ title: "Subject", headerShown: true, href: null }}
       />
     </Tabs>
   );
