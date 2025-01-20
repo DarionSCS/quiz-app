@@ -7,6 +7,7 @@ import {
   Button,
   TouchableOpacity,
   Alert,
+  Image,
 } from "react-native";
 import { Question } from "@core/questions/types";
 import * as Speech from "expo-speech";
@@ -25,7 +26,7 @@ export default function QuestionCard({
   const [answer, setAnswer] = useState<string>("");
   const [feedback, setFeedback] = useState<"correct" | "incorrect" | null>(
     null
-  ); // Feedback state
+  );
   const [timeLeft, setTimeLeft] = useState<number>(timerDuration);
 
   useEffect(() => {
@@ -71,7 +72,6 @@ export default function QuestionCard({
     }
   };
 
-  // Safely handle options
   const options: string[] = Array.isArray(question.options)
     ? (question.options as string[])
     : typeof question.options === "string"
@@ -80,6 +80,13 @@ export default function QuestionCard({
 
   return (
     <View style={styles.card}>
+      {question.img && (
+        <Image
+          source={{ uri: question.img }}
+          style={styles.questionImage}
+          resizeMode="contain"
+        />
+      )}
       <Text style={styles.questionText}>
         {question.question || "No Question Available"}
       </Text>
@@ -135,6 +142,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginVertical: 8,
     width: "100%",
+  },
+  questionImage: {
+    width: "100%",
+    height: 200,
+    marginBottom: 12,
   },
   questionText: {
     fontSize: 18,

@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { getSubject } from "@core/subjects/api";
 import { getPendingQuestionsBySubjectAndDifficulty } from "@core/questions/api";
@@ -29,7 +35,6 @@ export default function SubjectScreen() {
   >([]);
   const [startTime, setStartTime] = useState<number | null>(null);
 
-  // get session, subject, and high scores
   useEffect(() => {
     if (id) {
       const fetchData = async () => {
@@ -68,7 +73,6 @@ export default function SubjectScreen() {
     }
   }, [id]);
 
-  // get questions based on difficulty and id
   useEffect(() => {
     if (id && difficulty && sessionProfileId) {
       const fetchQuestions = async () => {
@@ -93,13 +97,9 @@ export default function SubjectScreen() {
       const correctAnswer = questions[currentIndex].answer;
       const isCorrect = correctAnswer === answer;
 
-      // Calculate time elapsed since the question was displayed
       const timeElapsed = startTime ? (Date.now() - startTime) / 1000 : null;
-
-      // Determine if a multiplier should be applied
       const multiplier = timeElapsed !== null && timeElapsed <= 10;
 
-      // Save the question result
       await setQuestionResult({
         profile_id: sessionProfileId,
         question_id: questionId,
@@ -108,19 +108,16 @@ export default function SubjectScreen() {
         multiplier,
       });
 
-      // Move to the next question or finish the quiz
       if (currentIndex < questions.length - 1) {
         setCurrentIndex(currentIndex + 1);
-        setStartTime(Date.now()); // Reset the start time for the next question
+        setStartTime(Date.now());
       } else {
-        // Calculate final score and progress
         const { score, progress } = await calculateQuizScore(
           sessionProfileId as string,
           id as string,
           difficulty as "Beginner" | "Intermediate" | "Advanced"
         );
 
-        // Save the final result
         await setResult({
           profile_id: sessionProfileId as string,
           subject_id: id as string,
@@ -196,7 +193,7 @@ export default function SubjectScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Subject: {subject.name}</Text>
       <Text style={styles.subtitle}>
         Difficulty: {difficulty} - Question {currentIndex + 1} of{" "}
@@ -209,7 +206,7 @@ export default function SubjectScreen() {
         }
         timerDuration={30}
       />
-    </View>
+    </ScrollView>
   );
 }
 

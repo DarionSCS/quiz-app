@@ -8,8 +8,10 @@ import {
   Alert,
   TouchableOpacity,
   Image,
+  ScrollView,
 } from "react-native";
 import Button from "@design/Button/Button";
+import { NotificationSettings } from "@design/Button/NotificationSettings";
 import { handleImagePicker, uploadImage } from "@core/utils/profileImageUtils";
 import { logout, getCurrentSession } from "@core/auth/api";
 import { getProfile, updateProfile } from "@core/profiles/api";
@@ -42,7 +44,6 @@ export default function Settings() {
       }
 
       const profileData = await getProfile(session.user.user_id);
-      console.log(profileData?.img);
 
       if (profileData) {
         setProfile({
@@ -125,74 +126,81 @@ export default function Settings() {
   };
 
   return (
-    <View style={styles.container}>
-      {loading ? (
-        <Text>Loading profile...</Text>
-      ) : (
-        <>
-          <Text style={styles.header}>Edit Profile</Text>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.container}>
+        {loading ? (
+          <Text>Loading profile...</Text>
+        ) : (
+          <>
+            <Text style={styles.header}>Edit Profile</Text>
 
-          <TouchableOpacity onPress={handleImageUpload}>
-            {profile.img ? (
-              <Image
-                source={{ uri: profile.img }}
-                style={styles.profileImage}
+            <TouchableOpacity onPress={handleImageUpload}>
+              {profile.img ? (
+                <Image
+                  source={{ uri: profile.img }}
+                  style={styles.profileImage}
+                />
+              ) : (
+                <View style={styles.placeholderImage}>
+                  <Text style={styles.placeholderText}>Upload Image</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Surname"
+              value={profile.surname}
+              onChangeText={(text) => setProfile({ ...profile, surname: text })}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Lastname"
+              value={profile.lastname}
+              onChangeText={(text) =>
+                setProfile({ ...profile, lastname: text })
+              }
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Nickname"
+              value={profile.nickname}
+              onChangeText={(text) =>
+                setProfile({ ...profile, nickname: text })
+              }
+            />
+
+            <View style={styles.switchContainer}>
+              <Text>Enable Sound</Text>
+              <Switch
+                value={profile.sound}
+                onValueChange={(value) =>
+                  setProfile({ ...profile, sound: value })
+                }
               />
-            ) : (
-              <View style={styles.placeholderImage}>
-                <Text style={styles.placeholderText}>Upload Image</Text>
-              </View>
-            )}
-          </TouchableOpacity>
+            </View>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Surname"
-            value={profile.surname}
-            onChangeText={(text) => setProfile({ ...profile, surname: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Lastname"
-            value={profile.lastname}
-            onChangeText={(text) => setProfile({ ...profile, lastname: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Nickname"
-            value={profile.nickname}
-            onChangeText={(text) => setProfile({ ...profile, nickname: text })}
-          />
+            <View style={styles.switchContainer}>
+              <Text>Enable Vibration</Text>
+              <Switch
+                value={profile.vibration}
+                onValueChange={(value) =>
+                  setProfile({ ...profile, vibration: value })
+                }
+              />
+            </View>
+            <NotificationSettings />
 
-          <View style={styles.switchContainer}>
-            <Text>Enable Sound</Text>
-            <Switch
-              value={profile.sound}
-              onValueChange={(value) =>
-                setProfile({ ...profile, sound: value })
-              }
-            />
-          </View>
-
-          <View style={styles.switchContainer}>
-            <Text>Enable Vibration</Text>
-            <Switch
-              value={profile.vibration}
-              onValueChange={(value) =>
-                setProfile({ ...profile, vibration: value })
-              }
-            />
-          </View>
-
-          <Button onPress={handleUpdateProfile}>
-            {isSaving ? "Saving..." : "Save Profile"}
-          </Button>
-          <View style={styles.topMargin}>
-            <Button onPress={logout}> Logout </Button>
-          </View>
-        </>
-      )}
-    </View>
+            <Button onPress={handleUpdateProfile}>
+              {isSaving ? "Saving..." : "Save Profile"}
+            </Button>
+            <View style={styles.topMargin}>
+              <Button onPress={logout}> Logout </Button>
+            </View>
+          </>
+        )}
+      </View>
+    </ScrollView>
   );
 }
 
@@ -225,4 +233,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   topMargin: { marginTop: 20 },
+  scrollContainer: {
+    padding: 20,
+    backgroundColor: "#fff",
+  },
 });

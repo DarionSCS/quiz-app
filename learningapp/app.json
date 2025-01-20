@@ -10,14 +10,18 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.learningapp"
+      "bundleIdentifier": "com.anonymous.learningapp",
+      "infoPlist": {
+        "NSUserNotificationUsageDescription": "This app needs notifications to remind you about tasks."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.learningapp"
+      "package": "com.anonymous.learningapp",
+      "permissions": ["NOTIFICATIONS"]
     },
     "web": {
       "bundler": "metro",

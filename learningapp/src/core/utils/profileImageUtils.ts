@@ -68,7 +68,7 @@ export const uploadImage = async (
 
     const { data: publicData } = await API.storage
       .from("EduApp")
-      .createSignedUrl(`profile-images/${fileName}`, 60);
+      .createSignedUrl(`profile-images/${fileName}`, 999999999999999);
 
     if (!publicData) {
       Alert.alert("Error", "Failed to retrieve public URL.");
