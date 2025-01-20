@@ -6,30 +6,27 @@ import {
   Switch,
   StyleSheet,
   Alert,
-  Platform,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import Button from "@design/Button/Button";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { handleImagePicker, uploadImage } from "@core/utils/profileImageUtils";
 import { logout, getCurrentSession } from "@core/auth/api";
 import { getProfile, updateProfile } from "@core/profiles/api";
-import { useRouter } from "expo-router";
 
 export default function Settings() {
   const [profile, setProfile] = useState({
     surname: "",
     lastname: "",
     nickname: "",
-    birth: "", // YYYY-MM-DD
+    birth: "",
     img: "",
     sound: true,
     vibration: true,
   });
   const [loading, setLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
-  const router = useRouter();
   useEffect(() => {
     const fetchUserProfile = async () => {
       setLoading(true);
@@ -45,12 +42,14 @@ export default function Settings() {
       }
 
       const profileData = await getProfile(session.user.user_id);
+      console.log(profileData?.img);
+
       if (profileData) {
         setProfile({
           surname: profileData.surname || "",
           lastname: profileData.lastname || "",
           nickname: profileData.nickname || "",
-          birth: profileData.birth || "", // YYYY-MM-DD
+          birth: profileData.birth || "",
           img: profileData.img || "",
           sound: profileData.sound ?? true,
           vibration: profileData.vibration ?? true,
@@ -78,7 +77,6 @@ export default function Settings() {
       }
 
       const updatedProfile = await updateProfile(session.user.user_id, profile);
-      console.log("updatedProfile: ", updatedProfile);
 
       if (updatedProfile) {
         Alert.alert("Success", "Profile updated successfully!");
@@ -93,12 +91,37 @@ export default function Settings() {
     }
   };
 
-  const handleDateChange = (event: any, selectedDate: Date | undefined) => {
-    setDatePickerVisible(false);
-    if (selectedDate) {
-      const formattedDate = selectedDate.toISOString().split("T")[0]; // takes away the time from date
-      setProfile({ ...profile, birth: formattedDate });
-    }
+  const handleImageUpload = async () => {
+    handleImagePicker(async (uri: string) => {
+      try {
+        await uploadImage(uri, async (publicUrl: string) => {
+          // Update the `img` field in the profile data
+          const session = await getCurrentSession();
+          if (!session) {
+            Alert.alert(
+              "Error",
+              "Unable to retrieve session. Please log in again."
+            );
+            return;
+          }
+
+          const updatedProfile = await updateProfile(session.user.user_id, {
+            ...profile,
+            img: publicUrl,
+          });
+
+          if (updatedProfile) {
+            setProfile((prevProfile) => ({ ...prevProfile, img: publicUrl }));
+            Alert.alert("Success", "Image uploaded and profile updated!");
+          } else {
+            Alert.alert("Error", "Failed to update profile image.");
+          }
+        });
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        Alert.alert("Error", "Failed to upload image.");
+      }
+    });
   };
 
   return (
@@ -108,6 +131,19 @@ export default function Settings() {
       ) : (
         <>
           <Text style={styles.header}>Edit Profile</Text>
+
+          <TouchableOpacity onPress={handleImageUpload}>
+            {profile.img ? (
+              <Image
+                source={{ uri: profile.img }}
+                style={styles.profileImage}
+              />
+            ) : (
+              <View style={styles.placeholderImage}>
+                <Text style={styles.placeholderText}>Upload Image</Text>
+              </View>
+            )}
+          </TouchableOpacity>
 
           <TextInput
             style={styles.input}
@@ -126,31 +162,6 @@ export default function Settings() {
             placeholder="Nickname"
             value={profile.nickname}
             onChangeText={(text) => setProfile({ ...profile, nickname: text })}
-          />
-
-          <TouchableOpacity
-            style={styles.datePickerContainer}
-            onPress={() => setDatePickerVisible(true)}
-          >
-            <Text style={styles.datePickerText}>
-              {profile.birth || "Select Date of Birth"}
-            </Text>
-          </TouchableOpacity>
-          {isDatePickerVisible && (
-            <DateTimePicker
-              value={profile.birth ? new Date(profile.birth) : new Date()}
-              mode="date"
-              display={Platform.OS === "ios" ? "inline" : "default"}
-              onChange={handleDateChange}
-              maximumDate={new Date()} // Ensure birthdate cannot be in the future
-            />
-          )}
-
-          <TextInput
-            style={styles.input}
-            placeholder="Image URL"
-            value={profile.img}
-            onChangeText={(text) => setProfile({ ...profile, img: text })}
           />
 
           <View style={styles.switchContainer}>
@@ -186,44 +197,32 @@ export default function Settings() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: "center",
-    backgroundColor: "#fff",
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
+  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
+  header: { fontSize: 24, fontWeight: "bold", textAlign: "center" },
+  input: { borderWidth: 1, borderColor: "#ccc", padding: 10, borderRadius: 5 },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    alignSelf: "center",
     marginBottom: 20,
-    textAlign: "center",
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 15,
+  placeholderImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#ccc",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    marginBottom: 20,
   },
+  placeholderText: { color: "#fff" },
   switchContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 15,
+    marginVertical: 10,
   },
-  datePickerContainer: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 15,
-    backgroundColor: "#f9f9f9",
-  },
-  datePickerText: {
-    color: "#333",
-  },
-  topMargin: {
-    marginTop: 10,
-    alignItems: "center",
-  },
+  topMargin: { marginTop: 20 },
 });
