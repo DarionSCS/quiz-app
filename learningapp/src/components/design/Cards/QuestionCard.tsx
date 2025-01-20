@@ -57,7 +57,6 @@ export default function QuestionCard({
         language: "en",
         pitch: 1,
         rate: 1,
-        onDone: () => console.log("Speech completed"),
         onError: (error) => {
           console.error("Speech error:", error);
           Alert.alert(
